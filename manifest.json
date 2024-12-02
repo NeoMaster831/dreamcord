@@ -5,9 +5,7 @@
   "description": "Dreamhack의 문제 풀이 현황을 디스코드 웹훅으로 알려주는 확장 프로그램",
   "permissions": [
     "storage",
-    "tabs",
-    "webRequest",
-    "scripting"
+    "webRequest"
   ],
   "host_permissions": [
     "https://dreamhack.io/*"

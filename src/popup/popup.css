@@ -1,0 +1,71 @@
+body {
+  width: 350px;
+  padding: 15px;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.5em;
+  text-align: center;
+}
+
+.webhooks-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.webhook-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background-color: #f5f5f5;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.webhook-item input {
+  flex: 1;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.webhook-item .save-button {
+  padding: 6px 12px;
+  background-color: #7289da;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.webhook-item .delete-button {
+  padding: 6px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-button {
+  padding: 8px;
+  background-color: #43b581;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  opacity: 0.9;
+} 

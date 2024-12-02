@@ -57,6 +57,8 @@ class DMessage {
         color: level_color,
         url: `https://dreamhack.io/wargame/challenges/${challengeId}`,
         timestamp: new Date().toISOString(),
+
+        // It is safe to use the raw player input object because Dreamhack and Discord will block exploits.
         ...(player ? { thumbnail: { url: player.profile_image || 'https://static.dreamhack.io/main/v2/img/amo.1a05d65.png' } } : {}),
       }]
     };

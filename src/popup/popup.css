@@ -7,7 +7,7 @@ body {
 .container {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 10px;
 }
 
 h1 {
@@ -45,6 +45,11 @@ h1 {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.webhook-item .save-button.modified {
+  background-color: #43b581;
 }
 
 .webhook-item .delete-button {
@@ -68,4 +73,51 @@ h1 {
 
 button:hover {
   opacity: 0.9;
-} 
+}
+
+#status-message {
+  color: #4CAF50;
+  font-size: 14px;
+  margin: 4px 0;
+  min-height: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  text-align: center;
+}
+
+#status-message.show {
+  opacity: 1;
+}
+
+#status-message.error {
+  color: #dc3545;
+}
+
+/* 개발용 디버그 스타일 */
+.debug-container {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px dashed #ccc;
+  display: flex;
+  gap: 8px;
+}
+
+#debug-challenge-id {
+  flex: 1;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.debug-button {
+  padding: 6px 12px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.debug-button:hover {
+  opacity: 0.9;
+}

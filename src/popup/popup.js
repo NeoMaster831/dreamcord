@@ -1,10 +1,30 @@
+import DWebhook from '../module/dwebhook.js';
+import DMessage from '../module/dmessage.js';
+
+const browserAPI = chrome; // chrome || browser || window.browser || window.chrome;
+
 document.addEventListener('DOMContentLoaded', () => {
   const webhooksList = document.getElementById('webhooks-list');
   const addWebhookButton = document.getElementById('add-webhook');
+  const statusMessage = document.getElementById('status-message');
 
-  // 웹훅 목록 불러오기
+  function showStatusMessage(message, isError = false) {
+    if (isError) {
+      statusMessage.classList.add('error');
+    } else {
+      statusMessage.classList.remove('error');
+    }
+    
+    statusMessage.textContent = message;
+    statusMessage.classList.add('show');
+    setTimeout(() => {
+      statusMessage.classList.remove('show');
+      statusMessage.classList.remove('error');
+    }, 2000);
+  }
+
   function loadWebhooks() {
-    chrome.storage.sync.get(['webhooks'], (result) => {
+    browserAPI.storage.sync.get(['webhooks'], (result) => {
       webhooksList.innerHTML = '';
       const webhooks = result.webhooks || [];
       
@@ -14,37 +34,49 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 웹훅 항목 HTML 생성
   function addWebhookItem(webhookUrl = '', index) {
     const webhookItem = document.createElement('div');
     webhookItem.className = 'webhook-item';
     webhookItem.innerHTML = `
       <input type="text" class="webhook-url" placeholder="https://discord.com/api/webhooks/..." value="${webhookUrl}">
       <button class="save-button">저장</button>
-      <button class="delete-button">×</button>
+      <button class="delete-button" style="display: ${webhookUrl ? 'inline' : 'none'}">×</button>
     `;
 
     const input = webhookItem.querySelector('.webhook-url');
     const saveButton = webhookItem.querySelector('.save-button');
     const deleteButton = webhookItem.querySelector('.delete-button');
-
-    // 저장 버튼 이벤트
+    
+    let originalValue = input.value;
+    input.addEventListener('input', () => {
+      if (input.value !== originalValue) {
+        saveButton.classList.add('modified');
+      } else {
+        saveButton.classList.remove('modified');
+      }
+    });
+    
     saveButton.addEventListener('click', () => {
-      chrome.storage.sync.get(['webhooks'], (result) => {
+      browserAPI.storage.sync.get(['webhooks'], (result) => {
         const webhooks = result.webhooks || [];
-        webhooks[index] = input.value;
-        chrome.storage.sync.set({ webhooks }, () => {
-          alert('웹훅이 저장되었습니다!');
+        const currentIndex = Array.from(webhooksList.children).indexOf(webhookItem);
+        webhooks[currentIndex] = input.value;
+        browserAPI.storage.sync.set({ webhooks }, () => {
+          showStatusMessage('웹훅이 저장되었습니다!');
+          deleteButton.style.display = 'inline';
+          originalValue = input.value;
+          saveButton.classList.remove('modified');
         });
       });
     });
 
-    // 삭제 버튼 이벤트
     deleteButton.addEventListener('click', () => {
-      chrome.storage.sync.get(['webhooks'], (result) => {
+      browserAPI.storage.sync.get(['webhooks'], (result) => {
         const webhooks = result.webhooks || [];
-        webhooks.splice(index, 1);
-        chrome.storage.sync.set({ webhooks }, () => {
+        const currentIndex = Array.from(webhooksList.children).indexOf(webhookItem);
+        webhooks.splice(currentIndex, 1);
+        browserAPI.storage.sync.set({ webhooks }, () => {
+          showStatusMessage('웹훅이 삭제되었습니다.', true);
           loadWebhooks();
         });
       });
@@ -53,14 +85,37 @@ document.addEventListener('DOMContentLoaded', () => {
     webhooksList.appendChild(webhookItem);
   }
 
-  // 새 웹훅 추가 버튼 이벤트
   addWebhookButton.addEventListener('click', () => {
-    chrome.storage.sync.get(['webhooks'], (result) => {
+    browserAPI.storage.sync.get(['webhooks'], (result) => {
       const webhooks = result.webhooks || [];
       addWebhookItem('', webhooks.length);
     });
   });
 
-  // 초기 웹훅 목록 로드
   loadWebhooks();
+
+  // 개발용 디버그 기능
+  const debugButton = document.getElementById('debug-test');
+  const debugInput = document.getElementById('debug-challenge-id');
+
+  debugButton?.addEventListener('click', async () => {
+    const challengeId = debugInput.value;
+    if (!challengeId) {
+      showStatusMessage('Challenge ID를 입력해주세요.', true);
+      return;
+    }
+
+    try {
+      const webhookMessage = await DMessage.buildSolvedMessage(challengeId, true);
+      const success = await DWebhook.sendToAll(webhookMessage);
+      
+      if (success) {
+        showStatusMessage('테스트 웹훅이 전송되었습니다.');
+      } else {
+        showStatusMessage('웹훅 전송에 실패했습니다.', true);
+      }
+    } catch (error) {
+      showStatusMessage('웹훅 전송에 실패했습니다.', true);
+    }
+  });
 }); 

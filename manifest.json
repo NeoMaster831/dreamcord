@@ -6,11 +6,21 @@
   "permissions": [
     "storage",
     "tabs",
-    "webRequest"
+    "webRequest",
+    "scripting"
   ],
   "host_permissions": [
     "https://dreamhack.io/*"
   ],
+  "background": {
+    "service_worker": "src/background/background.js",
+    "type": "module"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{dreamcord@extension}"
+    }
+  },
   "action": {
     "default_popup": "src/popup/popup.html",
     "default_icon": {
@@ -23,8 +33,5 @@
     "16": "images/icon16.png",
     "48": "images/icon48.png",
     "128": "images/icon128.png"
-  },
-  "background": {
-    "service_worker": "src/background/background.js"
   }
 } 

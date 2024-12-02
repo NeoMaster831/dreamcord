@@ -38,7 +38,8 @@ class DMessage {
     const pp = Performance.calculatePP(challengeInfo);
     valid = pp ? valid : false;
     
-    player.introduction = player.introduction.replace('`', "'");
+    // idk who will exploit this, but it's better to be safe than sorry.
+    player.introduction = player.introduction.replace(/[\\#&;`|*?~<>^()[\]{}$\n\r]/g, '');
     player.nickname = player.nickname.replace('`', "'");
 
     return {

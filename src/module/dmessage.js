@@ -37,6 +37,9 @@ class DMessage {
     
     const pp = Performance.calculatePP(challengeInfo);
     valid = pp ? valid : false;
+    
+    player.introduction = player.introduction.replace('`', "'");
+    player.nickname = player.nickname.replace('`', "'");
 
     return {
       content: "",

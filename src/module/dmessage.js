@@ -39,7 +39,7 @@ class DMessage {
     valid = pp ? valid : false;
     
     // idk who will exploit this, but it's better to be safe than sorry.
-    player.introduction = player.introduction.replace(/[\\#&;`|*?~<>^()[\]{}$\n\r]/g, '');
+    player.introduction = player.introduction.replace('`', "'");
     player.nickname = player.nickname.replace('`', "'");
 
     return {
@@ -47,8 +47,8 @@ class DMessage {
       embeds: [{
         title: valid ? `🎉 ${challengeInfo.title} 문제 해결!` : `🎉 Challenge #${challengeId} 문제 해결!`,
         description: valid ? 
-          `**해결자**\n` + `[${player.nickname}](https://dreamhack.io/users/${player.id})` + 
-          (player.introduction ? ` \`${player.introduction}\`\n\n` : '\n\n') + 
+          `**해결자**\n` + `[\`${player.nickname}\`](https://dreamhack.io/users/${player.id})` + 
+          (player.introduction ? ` | \`${player.introduction}\`\n\n` : '\n\n') + 
           `**난이도**\n` + `LEVEL ${challengeInfo.difficulty}\n\n` +
           `**태그**\n` + `${challengeInfo.tags.map(tag => `#${tag}`).join(', ')}\n\n` +
           `**솔버 수**\n` + `${challengeInfo.cnt_solvers} solved / ${challengeInfo.hit_count.hits} viewed` + (rate < 2 ? ` **(${rate.toFixed(2)}%)**\n\n` : ` (${rate.toFixed(2)}%)\n\n`) +

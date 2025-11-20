@@ -1,5 +1,5 @@
-import DWebhook from '../module/dwebhook.js';
-import DMessage from '../module/dmessage.js';
+import { sendToAll } from '../module/dwebhook.js';
+import { buildSolvedMessage } from '../module/dmessage.js';
 
 const browserAPI = chrome; // chrome || browser || window.browser || window.chrome;
 
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       statusMessage.classList.remove('error');
     }
-    
+
     statusMessage.textContent = message;
     statusMessage.classList.add('show');
     setTimeout(() => {
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     browserAPI.storage.sync.get(['webhooks'], (result) => {
       webhooksList.innerHTML = '';
       const webhooks = result.webhooks || [];
-      
+
       webhooks.forEach((webhook, index) => {
         addWebhookItem(webhook, index);
       });
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const input = webhookItem.querySelector('.webhook-url');
     const saveButton = webhookItem.querySelector('.save-button');
     const deleteButton = webhookItem.querySelector('.delete-button');
-    
+
     let originalValue = input.value;
     input.addEventListener('input', () => {
       if (input.value !== originalValue) {
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         saveButton.classList.remove('modified');
       }
     });
-    
+
     saveButton.addEventListener('click', () => {
       browserAPI.storage.sync.get(['webhooks'], (result) => {
         const webhooks = result.webhooks || [];
@@ -106,16 +106,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      const webhookMessage = await DMessage.buildSolvedMessage(challengeId, true);
-      const success = await DWebhook.sendToAll(webhookMessage);
-      
-      if (success) {
+      const webhookMessage = await buildSolvedMessage(challengeId, true);
+      const result = await sendToAll(webhookMessage);
+
+      if (result.status) {
         showStatusMessage('테스트 웹훅이 전송되었습니다.');
       } else {
-        showStatusMessage('웹훅 전송에 실패했습니다.', true);
+        showStatusMessage(`웹훅 전송에 실패했습니다. ${result.content}`, true);
       }
     } catch (error) {
-      showStatusMessage('웹훅 전송에 실패했습니다.', true);
+      showStatusMessage(`웹훅 전송에 실패했습니다. ${error}`, true);
     }
   });
-}); 
+});

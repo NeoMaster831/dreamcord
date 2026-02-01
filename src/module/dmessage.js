@@ -16,14 +16,14 @@ export async function buildSolvedMessage(challengeId, test = false) {
 
   let player = null;
   try {
-      const response = await fetch(`https://dreamhack.io/api/v1/wargame/challenges/${challengeId}/solvers/?limit=1&offset=${player_idx}&ordering=solved_at`);
-      console.log(response);
-      if (response.ok) {
-          const data = await response.json();
-          player = data.results[0].user;
-      }
+    const response = await fetch(`https://dreamhack.io/api/v1/wargame/challenges/${challengeId}/solvers/?limit=1&offset=${player_idx}&ordering=solved_at`);
+    console.log(response);
+    if (response.ok) {
+      const data = await response.json();
+      player = data.results[0].user;
+    }
   } catch (error) {
-      console.error('솔버 정보 가져오기 실패:', error);
+    console.error('솔버 정보 가져오기 실패:', error);
   }
 
   let valid = challengeInfo && player;
@@ -42,7 +42,7 @@ export async function buildSolvedMessage(challengeId, test = false) {
   player.introduction = player.introduction.replace('`', "'");
   player.nickname = player.nickname.replace('`', "'");
 
-  if(!valid){
+  if (!valid){
     console.error(player, pp);
   }
 

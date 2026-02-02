@@ -14,7 +14,7 @@ if (browserAPI.webRequest?.onCompleted) {
         if (!challengeId) return;
 
         if (details.statusCode >= 200 && details.statusCode < 300) {
-          const message = await buildSolvedMessage(challengeId);
+          const message = await buildSolvedMessage(challengeId, details.tabId, false);
           await sendToAll(message);
         }
       }

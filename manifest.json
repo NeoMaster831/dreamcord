@@ -9,6 +9,20 @@
     "service_worker": "src/background/background.js",
     "type": "module"
   },
+  "content_scripts": [
+    {
+      "matches": ["https://dreamhack.io/*"],
+      "js": ["src/content/content.js"],
+      "run_at": "document_idle",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["https://dreamhack.io/*"],
+      "js": ["src/content/bridge.js"],
+      "run_at": "document_idle",
+      "world": "ISOLATED"
+    }
+  ],
   "browser_specific_settings": {
     "gecko": {
       "id": "{dreamcord@extension}"

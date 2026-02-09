@@ -1,6 +1,6 @@
 import { calculatePP } from './performance.js';
 
-export async function buildSolvedMessage(challengeId, test = false) {
+export async function buildSolvedMessage(challengeId, tabId, test = false) {
   let challengeInfo = null;
 
   try {
@@ -12,18 +12,22 @@ export async function buildSolvedMessage(challengeId, test = false) {
     console.error('문제 정보 가져오기 실패:', error);
   }
 
-  const player_idx = challengeInfo.cnt_solvers - 1; // 바로바로 업데이트가 되는 것을 확인했기 때문에, 솔버 수에서 1을 빼줘야 합니다.
-
   let player = null;
-  try {
+  if (Number.isInteger(tabId) && tabId >= 0) {
+    player = await chrome.tabs.sendMessage(tabId, {
+      type: 'PROFILE_REQUEST'
+    });
+  } else {
+    try {
+      const player_idx = challengeInfo.cnt_solvers - 1; // 바로바로 업데이트가 되는 것을 확인했기 때문에, 솔버 수에서 1을 빼줘야 합니다.
       const response = await fetch(`https://dreamhack.io/api/v1/wargame/challenges/${challengeId}/solvers/?limit=1&offset=${player_idx}&ordering=solved_at`);
-      console.log(response);
       if (response.ok) {
-          const data = await response.json();
-          player = data.results[0].user;
+        const data = await response.json();
+        player = data.results[0].user;
       }
-  } catch (error) {
-      console.error('솔버 정보 가져오기 실패:', error);
+    } catch (error) {
+      console.error('플레이어 정보 가져오기 실패:', error);
+    }
   }
 
   let valid = challengeInfo && player;
@@ -42,7 +46,7 @@ export async function buildSolvedMessage(challengeId, test = false) {
   player.introduction = player.introduction.replace('`', "'");
   player.nickname = player.nickname.replace('`', "'");
 
-  if(!valid){
+  if (!valid){
     console.error(player, pp);
   }
 

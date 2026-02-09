@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      const webhookMessage = await buildSolvedMessage(challengeId, true);
+      const webhookMessage = await buildSolvedMessage(challengeId, null, true);
       const result = await sendToAll(webhookMessage);
 
       if (result.status) {
